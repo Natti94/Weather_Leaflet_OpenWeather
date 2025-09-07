@@ -1,8 +1,8 @@
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import { useState, useEffect } from "react";
 import Click from "../Click/click";
-import Mark from "../Marker/marker";
-import Search from "../Search/search";
+import Mark from "../marker/marker";
+import Search from "../search/search";
 
 function MapUpdater({ position }) {
   const map = useMap();

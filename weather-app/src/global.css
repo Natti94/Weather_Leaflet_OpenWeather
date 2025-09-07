@@ -1,0 +1,121 @@
+.Page {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-areas:
+    "favourite map weather"
+    "favourite forecast weather";
+  gap: 25px;
+  width: 90%;
+  max-width: 1300px;
+  margin: auto;
+  align-items: start;
+}
+
+.Favourite {
+  grid-area: favourite;
+  font-family: "Courier New", monospace;
+  font-size: 16px-76;
+  color: black;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  padding: 20px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.Map {
+  grid-area: map;
+  outline: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  height: 50vh;
+  max-height: 400px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+}
+
+.Weather {
+  grid-area: weather;
+  color: black;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400x;
+  text-align: center;
+}
+
+.Forecast {
+  grid-area: forecast;
+  color: white;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  text-align: center;
+}
+
+.Favourite button,
+.Favourite button:active,
+.Favourite button:focus,
+.Favourite button:focus-visible {
+  font-size: large;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  box-shadow: none;
+  transition: font-size 0.3s ease-in-out;
+  grid-column: 13 / 13;
+}
+
+.Favourite button:hover {
+  font-size: 30px;
+  transition: font-size 0.3s ease-in-out;
+}
+
+@media (max-width: 1024px) {
+  .Page {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "favourite map"
+      "weather map"
+      "forecast forecast";
+  }
+  .Map {
+    width: 100%;
+  }
+  .Weather,
+  .Forecast {
+    width: 100%;
+    max-width: none;
+  }
+}
+@media (max-width: 768px) {
+  .Page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .Favourite,
+  .Map,
+  .Weather,
+  .Forecast {
+    width: 90%;
+    max-width: 400px;
+  }
+  .Map {
+    height: 300px;
+  }
+}

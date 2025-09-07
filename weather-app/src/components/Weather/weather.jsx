@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { WeatherData, ForeCastData } from "../../Services/Weather/weather";
+import { WeatherData, ForeCastData } from "../../services/weather/weather";
 import "./weather.css";
 
 function Weather({ markedPosition, addToFavourites, myPosition, locationFetched }) {

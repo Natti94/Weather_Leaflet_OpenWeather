@@ -1,35 +1,95 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import Map from "./components/Map/map";
+import Favourite from "./components/Favourite/favourite";
+import Location from "./components/Location/location";
+import Weather from "./components/Weather/weather";
+import { WeatherData } from "./Services/Weather/weather";
+import "leaflet/dist/leaflet.css";
+import "./global.css";
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const [searchInput, setSearchInput] = useState(null);
+  const [markedPosition, setMarkedPosition] = useState(null);
+  const [myPosition, setMyPosition] = useState(null);
+  const [favourites, setFavourites] = useState([]);
+  const [locationFetched, setLocationFetched] = useState(false);
+  const addToFavourites = (locationData) => {
+    setFavourites((prev) => [...prev, { ...locationData, id: Date.now() }]);
+  };
+  const removeFromFavourites = (id) => {
+    setFavourites((prev) => prev.filter((fav) => fav.id !== id));
+  };
+  const updateFavourites = async () => {
+    if (favourites.length === 0) {
+      return;
+    }
+    const updatedFavourites = await Promise.all(
+      favourites.map(async (fav) => {
+        if (!fav.lat || !fav.lon) return fav;
+        try {
+          const weather = await WeatherData(fav.lat, fav.lon);
+          if (weather) {
+            return {
+              ...fav,
+              temp: weather.main.temp,
+              description: weather.weather[0].description,
+              icon: weather.weather[0].icon,
+              timestamp: Math.floor(Date.now() / 1000),
+            };
+          }
+          return fav;
+        } catch {
+          return fav;
+        }
+      })
+    );
+    setFavourites(updatedFavourites);
+  };
+  useEffect(() => {
+    if (searchInput) {
+      setMarkedPosition(searchInput);
+    }
+  }, [searchInput]);
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="Page">
+      <div className="Map">
+        <Map
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+          markedPosition={markedPosition}
+          setMarkedPosition={setMarkedPosition}
+          setMyPosition={setMyPosition}
+          myPosition={myPosition}
+        />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+      <div className="Favourite">
+        <button
+          type="button"
+          onClick={() =>
+            favourites.length > 0 && removeFromFavourites(favourites[0].id)
+          }
+        >
+          🗑️
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+        <button type="button" onClick={updateFavourites}>
+          🔃
+        </button>
+        <Favourite favourites={favourites} />
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <div className="Weather">
+        <Location
+          setMyPosition={setMyPosition}
+          setLocationFetched={setLocationFetched}
+        />
+        <Weather
+          markedPosition={markedPosition}
+          addToFavourites={addToFavourites}
+          myPosition={myPosition}
+          locationFetched={locationFetched}
+        />
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
